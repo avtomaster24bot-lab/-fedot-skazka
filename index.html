@@ -602,6 +602,52 @@ footer {
 footer a { color: var(--gold); text-decoration: none; }
 footer a:hover { text-decoration: underline; }
 
+/* ── CUSTOM PLAYER ── */
+.custom-player {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 4px;
+  border: 1px solid rgba(201,168,76,0.15);
+}
+.cp-btn {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  font-size: 1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.cp-btn:hover { background: var(--gold); color: var(--ink); }
+.cp-bar {
+  flex: 1;
+  height: 4px;
+  background: rgba(201,168,76,0.2);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+.cp-progress {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.5s linear;
+}
+.cp-time {
+  font-size: 0.85rem;
+  color: var(--gold);
+  flex-shrink: 0;
+  font-family: monospace;
+}
+
 /* ── ANIMATIONS ── */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(30px); }
@@ -784,10 +830,11 @@ footer a:hover { text-decoration: underline; }
           <div class="ep-title">Часть первая — Начало</div>
         </div>
         <div class="ep-desc">Знакомство с Федотом, первый царский каприз и завязка истории.</div>
-        <audio controls>
-          <source src="part1.mp3" type="audio/mpeg">
-          Ваш браузер не поддерживает аудио.
-        </audio>
+        <div class="custom-player" data-src="part1.mp3">
+          <button class="cp-btn" onclick="togglePlay(this)">▶</button>
+          <div class="cp-bar"><div class="cp-progress"></div></div>
+          <span class="cp-time">0:00</span>
+        </div>
       </div>
 
       <div class="episode-card reveal" onclick="activateEp(this)">
@@ -796,10 +843,11 @@ footer a:hover { text-decoration: underline; }
           <div class="ep-title">Часть вторая — Испытание</div>
         </div>
         <div class="ep-desc">Царь злится сильнее. Марья помогает. Федот уходит в путь.</div>
-        <audio controls>
-          <source src="part2.mp3" type="audio/mpeg">
-          Ваш браузер не поддерживает аудио.
-        </audio>
+        <div class="custom-player" data-src="part2.mp3">
+          <button class="cp-btn" onclick="togglePlay(this)">▶</button>
+          <div class="cp-bar"><div class="cp-progress"></div></div>
+          <span class="cp-time">0:00</span>
+        </div>
       </div>
 
       <div class="coming-soon-card reveal">
@@ -1020,6 +1068,61 @@ function activateEp(card) {
 function selectChip(el, val) {
   document.querySelectorAll('.donate-chip').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
+}
+
+// ── CUSTOM PLAYER ──
+const audioMap = {};
+
+function togglePlay(btn) {
+  const player = btn.closest('.custom-player');
+  const src = player.dataset.src;
+
+  // pause all others
+  Object.values(audioMap).forEach(a => {
+    if (a.src !== location.href.replace(/[^/]*$/, '') + src) {
+      a.pause();
+      const otherPlayer = document.querySelector(`.custom-player[data-src="${a._src}"]`);
+      if (otherPlayer) otherPlayer.querySelector('.cp-btn').textContent = '▶';
+    }
+  });
+
+  if (!audioMap[src]) {
+    const audio = new Audio(src);
+    audio._src = src;
+    audioMap[src] = audio;
+
+    audio.addEventListener('timeupdate', () => {
+      const prog = player.querySelector('.cp-progress');
+      const time = player.querySelector('.cp-time');
+      if (audio.duration) {
+        prog.style.width = (audio.currentTime / audio.duration * 100) + '%';
+      }
+      const m = Math.floor(audio.currentTime / 60);
+      const s = Math.floor(audio.currentTime % 60).toString().padStart(2,'0');
+      time.textContent = m + ':' + s;
+    });
+
+    audio.addEventListener('ended', () => {
+      btn.textContent = '▶';
+      player.querySelector('.cp-progress').style.width = '0%';
+      player.querySelector('.cp-time').textContent = '0:00';
+    });
+
+    player.querySelector('.cp-bar').addEventListener('click', e => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const ratio = (e.clientX - rect.left) / rect.width;
+      audio.currentTime = ratio * audio.duration;
+    });
+  }
+
+  const audio = audioMap[src];
+  if (audio.paused) {
+    audio.play();
+    btn.textContent = '⏸';
+  } else {
+    audio.pause();
+    btn.textContent = '▶';
+  }
 }
 
 // ── COPY CARD ──
