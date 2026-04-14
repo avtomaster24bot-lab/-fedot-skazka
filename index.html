@@ -831,7 +831,7 @@ footer a:hover { text-decoration: underline; }
         </div>
         <div class="ep-desc">Знакомство с Федотом, первый царский каприз и завязка истории.</div>
         <div class="custom-player" data-src="part1.mp3">
-          <button class="cp-btn" onclick="togglePlay(this)">▶</button>
+          <button class="cp-btn" onclick="event.stopPropagation();togglePlay(this)">▶</button>
           <div class="cp-bar"><div class="cp-progress"></div></div>
           <span class="cp-time">0:00</span>
         </div>
@@ -844,7 +844,7 @@ footer a:hover { text-decoration: underline; }
         </div>
         <div class="ep-desc">Царь злится сильнее. Марья помогает. Федот уходит в путь.</div>
         <div class="custom-player" data-src="part2.mp3">
-          <button class="cp-btn" onclick="togglePlay(this)">▶</button>
+          <button class="cp-btn" onclick="event.stopPropagation();togglePlay(this)">▶</button>
           <div class="cp-bar"><div class="cp-progress"></div></div>
           <span class="cp-time">0:00</span>
         </div>
