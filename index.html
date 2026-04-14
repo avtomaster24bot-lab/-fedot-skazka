@@ -831,7 +831,7 @@ footer a:hover { text-decoration: underline; }
         </div>
         <div class="ep-desc">Знакомство с Федотом, первый царский каприз и завязка истории.</div>
         <div class="custom-player" data-src="part1.mp3">
-          <button class="cp-btn" onclick="event.stopPropagation();togglePlay(this)">▶</button>
+          <button class="cp-btn" onclick="togglePlay(this)">▶</button>
           <div class="cp-bar"><div class="cp-progress"></div></div>
           <span class="cp-time">0:00</span>
         </div>
@@ -844,7 +844,7 @@ footer a:hover { text-decoration: underline; }
         </div>
         <div class="ep-desc">Царь злится сильнее. Марья помогает. Федот уходит в путь.</div>
         <div class="custom-player" data-src="part2.mp3">
-          <button class="cp-btn" onclick="event.stopPropagation();togglePlay(this)">▶</button>
+          <button class="cp-btn" onclick="togglePlay(this)">▶</button>
           <div class="cp-bar"><div class="cp-progress"></div></div>
           <span class="cp-time">0:00</span>
         </div>
@@ -1074,51 +1074,43 @@ function selectChip(el, val) {
 const audioMap = {};
 
 function togglePlay(btn) {
+  btn.closest('.episode-card') && activateEp(btn.closest('.episode-card'));
   const player = btn.closest('.custom-player');
   const src = player.dataset.src;
 
-  // pause all others
-  Object.values(audioMap).forEach(a => {
-    if (a.src !== location.href.replace(/[^/]*$/, '') + src) {
-      a.pause();
-      const otherPlayer = document.querySelector(`.custom-player[data-src="${a._src}"]`);
-      if (otherPlayer) otherPlayer.querySelector('.cp-btn').textContent = '▶';
+  Object.keys(audioMap).forEach(k => {
+    if (k !== src) {
+      audioMap[k].pause();
+      const op = document.querySelector(`.custom-player[data-src="${k}"] .cp-btn`);
+      if (op) op.textContent = '▶';
     }
   });
 
   if (!audioMap[src]) {
     const audio = new Audio(src);
-    audio._src = src;
     audioMap[src] = audio;
-
     audio.addEventListener('timeupdate', () => {
-      const prog = player.querySelector('.cp-progress');
-      const time = player.querySelector('.cp-time');
-      if (audio.duration) {
-        prog.style.width = (audio.currentTime / audio.duration * 100) + '%';
-      }
+      if (!audio.duration) return;
+      player.querySelector('.cp-progress').style.width = (audio.currentTime / audio.duration * 100) + '%';
       const m = Math.floor(audio.currentTime / 60);
       const s = Math.floor(audio.currentTime % 60).toString().padStart(2,'0');
-      time.textContent = m + ':' + s;
+      player.querySelector('.cp-time').textContent = m + ':' + s;
     });
-
     audio.addEventListener('ended', () => {
       btn.textContent = '▶';
       player.querySelector('.cp-progress').style.width = '0%';
       player.querySelector('.cp-time').textContent = '0:00';
     });
-
     player.querySelector('.cp-bar').addEventListener('click', e => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const ratio = (e.clientX - rect.left) / rect.width;
-      audio.currentTime = ratio * audio.duration;
+      if (!audioMap[src].duration) return;
+      const r = e.currentTarget.getBoundingClientRect();
+      audioMap[src].currentTime = ((e.clientX - r.left) / r.width) * audioMap[src].duration;
     });
   }
 
   const audio = audioMap[src];
   if (audio.paused) {
-    audio.play();
-    btn.textContent = '⏸';
+    audio.play().then(() => { btn.textContent = '⏸'; }).catch(() => {});
   } else {
     audio.pause();
     btn.textContent = '▶';
