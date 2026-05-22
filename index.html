@@ -316,28 +316,51 @@ section {
   margin-bottom: 14px;
 }
 
-audio {
-  width: 100%;
-  margin-top: 4px;
-  filter: sepia(0.4) hue-rotate(10deg);
-}
-
-audio::-webkit-media-controls-panel {
-  background: rgba(14,10,5,0.9);
-}
-
-.coming-soon-card {
-  background: rgba(245,234,208,0.02);
-  border: 1px dashed rgba(201,168,76,0.2);
-  border-radius: 4px;
-  padding: 20px 28px;
+/* кастомный плеер поверх */
+.custom-player {
   display: flex;
   align-items: center;
-  gap: 16px;
-  color: rgba(245,234,208,0.4);
-  font-style: italic;
+  gap: 14px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 4px;
+  border: 1px solid rgba(201,168,76,0.15);
 }
-.coming-soon-card .ep-num { border-color: rgba(201,168,76,0.3); color: rgba(201,168,76,0.3); }
+.cp-btn {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  font-size: 1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.cp-btn:hover { background: var(--gold); color: var(--ink); }
+.cp-bar {
+  flex: 1;
+  height: 4px;
+  background: rgba(201,168,76,0.2);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+.cp-progress {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.5s linear;
+}
+.cp-time {
+  font-size: 0.85rem;
+  color: var(--gold);
+  flex-shrink: 0;
+  font-family: monospace;
+}
 
 /* ── ABOUT SECTION ── */
 .about-grid {
@@ -603,52 +626,6 @@ footer {
 footer a { color: var(--gold); text-decoration: none; }
 footer a:hover { text-decoration: underline; }
 
-/* ── CUSTOM PLAYER ── */
-.custom-player {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-top: 12px;
-  padding: 10px 14px;
-  background: rgba(0,0,0,0.3);
-  border-radius: 4px;
-  border: 1px solid rgba(201,168,76,0.15);
-}
-.cp-btn {
-  width: 38px; height: 38px;
-  border-radius: 50%;
-  border: 1px solid var(--gold);
-  background: transparent;
-  color: var(--gold);
-  font-size: 1rem;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all 0.2s;
-  display: flex; align-items: center; justify-content: center;
-}
-.cp-btn:hover { background: var(--gold); color: var(--ink); }
-.cp-bar {
-  flex: 1;
-  height: 4px;
-  background: rgba(201,168,76,0.2);
-  border-radius: 2px;
-  cursor: pointer;
-  position: relative;
-}
-.cp-progress {
-  height: 100%;
-  background: var(--gold);
-  border-radius: 2px;
-  width: 0%;
-  transition: width 0.5s linear;
-}
-.cp-time {
-  font-size: 0.85rem;
-  color: var(--gold);
-  flex-shrink: 0;
-  font-family: monospace;
-}
-
 /* ── ANIMATIONS ── */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(30px); }
@@ -820,11 +797,12 @@ footer a:hover { text-decoration: underline; }
 <section class="player-section">
   <div class="container">
     <div class="divider reveal"><div class="divider-icon">✦ Слушать ✦</div></div>
-    <div class="section-label reveal">Бесплатно · 2 части уже доступны</div>
+    <div class="section-label reveal">Бесплатно · Все 5 частей</div>
     <h2 class="section-title reveal">Все части сказки</h2>
 
     <div class="episodes-grid">
 
+      <!-- Часть 1 -->
       <div class="episode-card reveal" onclick="activateEp(this)">
         <div class="episode-header">
           <div class="ep-num">I</div>
@@ -838,6 +816,7 @@ footer a:hover { text-decoration: underline; }
         </div>
       </div>
 
+      <!-- Часть 2 -->
       <div class="episode-card reveal" onclick="activateEp(this)">
         <div class="episode-header">
           <div class="ep-num">II</div>
@@ -851,17 +830,46 @@ footer a:hover { text-decoration: underline; }
         </div>
       </div>
 
-      <div class="coming-soon-card reveal">
-        <div class="ep-num">III</div>
-        <div>Часть третья — <em>скоро…</em></div>
+      <!-- Часть 3: Корысть и обман -->
+      <div class="episode-card reveal" onclick="activateEp(this)">
+        <div class="episode-header">
+          <div class="ep-num">III</div>
+          <div class="ep-title">Часть третья — Корысть и обман</div>
+        </div>
+        <div class="ep-desc">Царские приближённые плетут интриги, а Федот встречает первых врагов.</div>
+        <div class="custom-player" data-src="part3.mp3">
+          <button class="cp-btn" onclick="togglePlay(this)">▶</button>
+          <div class="cp-bar"><div class="cp-progress"></div></div>
+          <span class="cp-time">0:00</span>
+        </div>
       </div>
-      <div class="coming-soon-card reveal">
-        <div class="ep-num">IV</div>
-        <div>Часть четвёртая — <em>скоро…</em></div>
+
+      <!-- Часть 4: Остров Буян -->
+      <div class="episode-card reveal" onclick="activateEp(this)">
+        <div class="episode-header">
+          <div class="ep-num">IV</div>
+          <div class="ep-title">Часть четвёртая — Остров Буян</div>
+        </div>
+        <div class="ep-desc">Таинственный остров, чудеса и первая встреча с тем, «чего не может быть».</div>
+        <div class="custom-player" data-src="part4.mp3">
+          <button class="cp-btn" onclick="togglePlay(this)">▶</button>
+          <div class="cp-bar"><div class="cp-progress"></div></div>
+          <span class="cp-time">0:00</span>
+        </div>
       </div>
-      <div class="coming-soon-card reveal">
-        <div class="ep-num">V</div>
-        <div>Часть пятая, финальная — <em>скоро…</em></div>
+
+      <!-- Часть 5: Сила в Правде -->
+      <div class="episode-card reveal" onclick="activateEp(this)">
+        <div class="episode-header">
+          <div class="ep-num">V</div>
+          <div class="ep-title">Часть пятая — Сила в Правде</div>
+        </div>
+        <div class="ep-desc">Финальная битва, торжество справедливости и счастливый финал.</div>
+        <div class="custom-player" data-src="part5.mp3">
+          <button class="cp-btn" onclick="togglePlay(this)">▶</button>
+          <div class="cp-bar"><div class="cp-progress"></div></div>
+          <span class="cp-time">0:00</span>
+        </div>
       </div>
 
     </div>
@@ -897,7 +905,7 @@ footer a:hover { text-decoration: underline; }
         <div class="price-sub">по велению сердца</div>
         <ul class="price-features">
           <li>Скажешь спасибо мастеру</li>
-          <li>Поможешь выйти частям III–V</li>
+          <li>Поможешь новым работам</li>
           <li>Имя в титрах финала (по желанию)</li>
         </ul>
         <button class="btn btn-donate" onclick="openDonate()">Бросить монету в шапку</button>
@@ -987,7 +995,6 @@ footer a:hover { text-decoration: underline; }
     <h2>Забрать все 5 частей</h2>
     <p>После уплаты одной монеты — ты получишь архив со всеми частями сказки.</p>
     <input type="email" placeholder="Твой email для отправки архива" class="modal-input">
-    <!-- Сюда вставить реальный платёжный сервис, например Gumroad или Boosty -->
     <a href="https://gumroad.com/" target="_blank" class="modal-submit" style="display:block;text-decoration:none;padding:14px;background:linear-gradient(135deg,#8b1a1a,#c0392b);color:#f5ead0;font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.3s;">
       Уплатить монету и забрать архив 🪙
     </a>
@@ -1075,7 +1082,7 @@ function selectChip(el, val) {
 const audioMap = {};
 
 function togglePlay(btn) {
-  btn.closest('.episode-card') && activateEp(btn.closest('.episode-card'));
+  if (btn.closest('.episode-card')) activateEp(btn.closest('.episode-card'));
   const player = btn.closest('.custom-player');
   const src = player.dataset.src;
 
