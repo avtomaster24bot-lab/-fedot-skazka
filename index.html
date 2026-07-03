@@ -820,7 +820,7 @@ footer a:hover { text-decoration: underline; }
 <section class="player-section">
   <div class="container">
     <div class="divider reveal"><div class="divider-icon">✦ Слушать ✦</div></div>
-    <div class="section-label reveal">Бесплатно · 2 части уже доступны</div>
+    <div class="section-label reveal">Бесплатно · Все 5 частей доступны</div>
     <h2 class="section-title reveal">Все части сказки</h2>
 
     <div class="episodes-grid">
@@ -851,17 +851,43 @@ footer a:hover { text-decoration: underline; }
         </div>
       </div>
 
-      <div class="coming-soon-card reveal">
-        <div class="ep-num">III</div>
-        <div>Часть третья — <em>скоро…</em></div>
+      <div class="episode-card reveal" onclick="activateEp(this)">
+        <div class="episode-header">
+          <div class="ep-num">III</div>
+          <div class="ep-title">Часть третья — Путь</div>
+        </div>
+        <div class="ep-desc">Федот идёт за тридевять земель выполнять невозможное.</div>
+        <div class="custom-player" data-src="part3.mp3">
+          <button class="cp-btn" onclick="togglePlay(this)">▶</button>
+          <div class="cp-bar"><div class="cp-progress"></div></div>
+          <span class="cp-time">0:00</span>
+        </div>
       </div>
-      <div class="coming-soon-card reveal">
-        <div class="ep-num">IV</div>
-        <div>Часть четвёртая — <em>скоро…</em></div>
+
+      <div class="episode-card reveal" onclick="activateEp(this)">
+        <div class="episode-header">
+          <div class="ep-num">IV</div>
+          <div class="ep-title">Часть четвёртая — Испытание</div>
+        </div>
+        <div class="ep-desc">Новые козни царя. Силы на исходе, но дух не сломлен.</div>
+        <div class="custom-player" data-src="part4.mp3">
+          <button class="cp-btn" onclick="togglePlay(this)">▶</button>
+          <div class="cp-bar"><div class="cp-progress"></div></div>
+          <span class="cp-time">0:00</span>
+        </div>
       </div>
-      <div class="coming-soon-card reveal">
-        <div class="ep-num">V</div>
-        <div>Часть пятая, финальная — <em>скоро…</em></div>
+
+      <div class="episode-card reveal" onclick="activateEp(this)">
+        <div class="episode-header">
+          <div class="ep-num">V</div>
+          <div class="ep-title">Часть пятая — Конец да победа</div>
+        </div>
+        <div class="ep-desc">Финал. Правда торжествует. Федот возвращается домой.</div>
+        <div class="custom-player" data-src="part5.mp3">
+          <button class="cp-btn" onclick="togglePlay(this)">▶</button>
+          <div class="cp-bar"><div class="cp-progress"></div></div>
+          <span class="cp-time">0:00</span>
+        </div>
       </div>
 
     </div>
